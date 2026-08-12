@@ -1,0 +1,15 @@
+# Raw photo folders — never uploaded. The zips are what get shared.
+abdul_dataset/
+jara_dataset/
+hasham_dataset/
+original_dataset/
+unassigned/
+
+# Photo archives — too big for GitHub (100 MB per-file limit), shared via Drive
+*.zip
+
+# Local Label Studio install and database
+ls-venv/
+*.sqlite3
+__pycache__/
+.DS_Store
