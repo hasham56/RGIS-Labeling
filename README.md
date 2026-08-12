@@ -10,7 +10,7 @@ Each of you has a folder of photos:
 |---|---|
 | `abdul_dataset/` | 30 |
 | `jara_dataset/` | 38 |
-| `hasham_dataset/` | 21 |
+| `hasham_dataset/` | 75 |
 
 `original_dataset/` holds 43 photos that are **already labeled to standard** — import
 that first and look at it before you start.
