@@ -26,9 +26,16 @@ the **same folder**.
    **Code → Download ZIP**, and unzip it somewhere sensible — that folder is your
    working folder for everything below. (`git clone` works too if you use git.)
    It contains `README.md`, `label_config.xml` and `original_dataset_tasks.json`.
-2. **Get your photos.** Hasham will send you two Google Drive links — download both:
-   - `original_dataset.zip` — the finished reference photos (everyone gets this)
-   - `<your name>_dataset.zip` — your own share
+2. **Get your photos** from the shared Drive folder:
+   <https://drive.google.com/drive/folders/10PVs_fygZLiWEdH9MrJ9a3bQn6qbvGIe?usp=sharing>
+
+   Download exactly **two** files from it:
+   - `original_dataset.zip` — the finished reference photos (everyone needs this)
+   - `<your name>_dataset.zip` — your own share, so `abdul_dataset.zip` or
+     `jara_dataset.zip`
+
+   Ignore the rest. `unassigned.zip` is the 1.4 GB pool of photos nobody has been
+   given yet, and the other people's batches are not yours to label.
 3. **Unzip both inside the folder from step 1**, so it ends up looking like this:
 
 ```
