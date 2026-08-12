@@ -95,8 +95,11 @@ Paste the config before importing, or every region shows as "unknown label".
 2. **Settings → Labeling Interface → Code** → paste `label_config.xml` → **Save**.
    Hotkeys: `1` small, `2` medium, `3` large, `4` price_label.
 3. **Settings → Cloud Storage → Add Source Storage → Local files** →
-   path `<folder>/<name>_dataset` → **Add Storage**.
+   path `<folder>/<name>_dataset` → set **Import method** to **Tasks** →
+   **Add Storage**.
 4. Click **Sync**. Your photos become tasks — no JSON to import.
+
+Import method must be **Tasks**, or Sync fails with "not a JSON file".
 
 Never use **Upload Files**; it renames every photo and breaks the merge.
 
