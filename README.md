@@ -1,10 +1,7 @@
-# Tesco price-ticket labeling — read this first
+# Tesco price-ticket labeling
 
-We are teaching a computer to find **Tesco shelf-edge price tickets** in shelf
-photos, and to tell how big each ticket physically is. Your job is to outline every
-price ticket in your photos and mark it **small**, **medium** or **large**.
-
-Each of you has a folder of photos:
+Outline every shelf-edge price ticket in your photos and mark it **small**, **medium**
+or **large**.
 
 | Folder | Photos |
 |---|---|
@@ -12,176 +9,101 @@ Each of you has a folder of photos:
 | `jara_dataset/` | 38 |
 | `hasham_dataset/` | 75 |
 
-`original_dataset/` holds 43 photos that are **already labeled to standard** — import
-that first and look at it before you start.
+`original_dataset/` is 43 photos already labeled — your reference.
 
 ---
 
 ## 0. Get the files
 
-The photos are too big for GitHub, so they arrive separately. You need both halves in
-the **same folder**.
-
-1. **Get this guide and the config files.** On the repo page click
-   **Code → Download ZIP**, and unzip it somewhere sensible — that folder is your
-   working folder for everything below. (`git clone` works too if you use git.)
-   It contains `README.md`, `label_config.xml` and `original_dataset_tasks.json`.
-2. **Get your photos** from the shared Drive folder:
-   <https://drive.google.com/drive/folders/10PVs_fygZLiWEdH9MrJ9a3bQn6qbvGIe?usp=sharing>
-
-   Download exactly **two** files from it:
-   - `original_dataset.zip` — the finished reference photos (everyone needs this)
-   - `<your name>_dataset.zip` — your own share, so `abdul_dataset.zip` or
-     `jara_dataset.zip`
-
-   Ignore the rest. `unassigned.zip` is the 1.4 GB pool of photos nobody has been
-   given yet, and the other people's batches are not yours to label.
-3. **Unzip both inside the folder from step 1**, so it ends up looking like this:
+1. On the repo page: **Code → Download ZIP**, unzip it. That folder is your working
+   folder. It has `README.md`, `label_config.xml`, `original_dataset_tasks.json`.
+2. From the [Drive folder](https://drive.google.com/drive/folders/10PVs_fygZLiWEdH9MrJ9a3bQn6qbvGIe?usp=sharing)
+   download two files: `original_dataset.zip` and your own `<name>_dataset.zip`.
+3. Unzip both **inside** the folder from step 1:
 
 ```
 RGIS-Labeling/
 ├── README.md
 ├── label_config.xml
 ├── original_dataset_tasks.json
-├── original_dataset/        <- from original_dataset.zip
-└── abdul_dataset/           <- from your own zip (jara_dataset / hasham_dataset)
+├── original_dataset/
+└── abdul_dataset/
 ```
 
-The folder names matter — Label Studio is pointed at them by name later, so unzip
-in place and do not rename anything.
+Do not rename anything.
 
-## 1. Setup (once)
+## 1. Setup
 
-You need **Python 3.9, 3.10 or 3.11**. Label Studio does not install cleanly on 3.12
-or newer — if you already have a newer Python, install 3.11 alongside it rather than
-fighting it.
+Python **3.9, 3.10 or 3.11** (3.12+ will not install Label Studio).
 
-### Windows
-
-1. Install Python 3.11 from <https://www.python.org/downloads/release/python-3119/>
-   (the "Windows installer (64-bit)"). On the first screen **tick "Add python.exe to
-   PATH"** before clicking Install.
-2. Open **PowerShell**, go to this folder, and create the environment:
+**Windows** — install Python 3.11 from
+[python.org](https://www.python.org/downloads/release/python-3119/), ticking
+**"Add python.exe to PATH"**. Then in PowerShell:
 
 ```powershell
-cd C:\path\to\RGIS_Labeling
+cd C:\path\to\RGIS-Labeling
 py -3.11 -m venv ls-venv
-.\ls-venv\Scripts\python -m pip install --upgrade pip
 .\ls-venv\Scripts\pip install label-studio
-```
-
-That last step takes a few minutes. If `py -3.11` is not recognised, Python was
-installed without the PATH tickbox — re-run the installer and choose Modify.
-
-### macOS / Linux
-
-```bash
-cd /full/path/to/RGIS_Labeling
-python3 -m venv ls-venv
-./ls-venv/bin/pip install --upgrade pip
-./ls-venv/bin/pip install label-studio
-```
-
-On Ubuntu, if `venv` complains, run `sudo apt install python3-venv` first.
-
-### Start Label Studio — every time, like this
-
-Both variables are mandatory. Without them every photo shows as a broken image.
-
-**Windows (PowerShell):**
-
-```powershell
-cd C:\path\to\RGIS_Labeling
-$env:LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED="true"
-$env:LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT="C:\path\to\RGIS_Labeling"
-.\ls-venv\Scripts\label-studio
 ```
 
 **macOS / Linux:**
 
 ```bash
-cd /full/path/to/RGIS_Labeling
+cd /path/to/RGIS-Labeling
+python3 -m venv ls-venv
+./ls-venv/bin/pip install label-studio
+```
+
+### Start it — every time, like this
+
+Both variables are required, or photos show as broken images.
+
+```powershell
+cd C:\path\to\RGIS-Labeling
+$env:LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED="true"
+$env:LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT="C:\path\to\RGIS-Labeling"
+.\ls-venv\Scripts\label-studio
+```
+
+```bash
+cd /path/to/RGIS-Labeling
 export LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
-export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=/full/path/to/RGIS_Labeling
+export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=/path/to/RGIS-Labeling
 ./ls-venv/bin/label-studio
 ```
 
-Replace the path with wherever this folder actually sits on your machine — on Windows
-copy it from the File Explorer address bar, on macOS/Linux run `pwd` inside the folder.
-The rest of this guide writes paths in the `/full/path/to/RGIS_Labeling/...` style; on
-Windows use your `C:\...\RGIS_Labeling\...` form instead, with backslashes.
-
-Windows may pop up a firewall prompt the first time — click **Allow access**; this is
-only Label Studio serving to your own browser.
-
-Then open <http://localhost:8080> and create an account. It is local to your machine,
-so any email and password work — nothing is sent anywhere. Leave that window running
-while you label; closing it shuts Label Studio down (your work is saved).
+Open <http://localhost:8080> and create an account — it is local, any email works.
+Leave the terminal running while you label.
 
 ---
 
-## 2. Import the original dataset (the reference)
+## 2. Import the reference (43 labeled photos)
 
-This is the finished example: 43 photos, 1,610 tickets already outlined and sized.
-You are not editing it — you are looking at it to see what "done properly" means.
+1. **Create Project** → `Reference`.
+2. **Settings → Labeling Interface → Code** → paste `label_config.xml` → **Save**.
+3. **Settings → Cloud Storage → Add Source Storage → Local files** →
+   path `<folder>/original_dataset` → **Add Storage**. Do not Sync.
+4. **Import** → `original_dataset_tasks.json` → 43 labeled tasks.
 
-1. **Create Project** → call it `Reference`.
-2. **Settings → Labeling Interface → Code** → delete what is in the box, paste the
-   entire contents of `label_config.xml` → **Save**.
-3. **Settings → Cloud Storage → Add Source Storage → Local files**
-   - **Absolute local path**: `/full/path/to/RGIS_Labeling/original_dataset`
-   - **Test Connection** → **Add Storage**
-   - **Do not click Sync.**
-4. Go to the task list → **Import** → select `original_dataset_tasks.json` → 43 tasks
-   appear, each showing its tickets already outlined and colour-coded by size.
-
-**Do step 2 before step 4.** If you import first, every region shows as "unknown
-label" and the only fix is deleting the project and starting again.
-
-Open a few tasks. Note how tightly the outlines hug the printed card, and which
-things are deliberately *not* outlined.
+Paste the config before importing, or every region shows as "unknown label".
 
 ---
 
 ## 3. Label your own share
 
-### Set the project up
-
-1. **Create Project** → call it your name.
+1. **Create Project** → your name.
 2. **Settings → Labeling Interface → Code** → paste `label_config.xml` → **Save**.
-   (Same file as before. Hotkeys: `1` small, `2` medium, `3` large, `4` price_label.)
-3. **Settings → Cloud Storage → Add Source Storage → Local files**
-   - **Absolute local path**: `/full/path/to/RGIS_Labeling/<your name>_dataset`
-   - **Test Connection** → **Add Storage**
-4. This time **click Sync**. Your photos become tasks automatically — there is no
-   JSON to import, because your photos have no labels on them yet.
+   Hotkeys: `1` small, `2` medium, `3` large, `4` price_label.
+3. **Settings → Cloud Storage → Add Source Storage → Local files** →
+   path `<folder>/<name>_dataset` → **Add Storage**.
+4. Click **Sync**. Your photos become tasks — no JSON to import.
 
-> Never use the **Upload Files** button in the Import dialog. It renames every photo
-> with a random prefix, and filenames are how all our work gets merged back together.
+Never use **Upload Files**; it renames every photo and breaks the merge.
 
 ---
 
-## 4. Export when you are done
+## 4. Export
 
-1. Check the task list shows every one of your photos as **completed**. Unsubmitted
-   tasks are silently dropped from the export.
-2. **Export** (top right) → choose **JSON** — the full JSON, *not* JSON-MIN.
-3. Save it as `<your name>.json` and send it to Hasham.
-
-JSON is the format that keeps the polygon points, the size labels and the original
-filenames together. JSON-MIN drops detail we need, and the other formats lose the
-link back to the photo filenames.
-
----
-
-## If something looks wrong
-
-| Symptom | Cause |
-|---|---|
-| Photos show as broken images | Label Studio was not started with the two environment variables, or the storage path in step 3 is wrong |
-| Regions say "unknown label" | the labeling config was pasted *after* importing — delete the project and redo it in order |
-| Duplicate empty tasks appeared | Sync was clicked on the Reference project — only your own project gets synced |
-| Photos have long random names | the Upload button was used instead of storage sync |
-
-Anything else, or any photo you genuinely cannot judge — ask Hasham rather than
-guessing.
+1. Confirm every task shows as **completed** — unsubmitted tasks are dropped.
+2. **Export → JSON** (not JSON-MIN).
+3. Save as `<name>.json` and send it to Hasham.
